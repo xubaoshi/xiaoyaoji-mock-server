@@ -4,12 +4,19 @@ const Mock = require('mockjs')
 const Random = Mock.Random
 
 const FieldTypes = {
-  ARRAY: 'array[object]',
-  OBJECT: 'object',
   STRING: 'string',
+  NUMBER: 'number',
+  BOOLEAN: 'boolean',
+  OBJECT: 'object',
+  ARRAY: 'array',
+  ARRAY_NUMBER: 'array[number]',
+  ARRAY_BOOLEAN: 'array[boolean]',
+  ARRAY_STRING: 'array[string]',
+  ARRAY_OBJECT: 'array[object]',
+  ARRAY_ARRAY: 'array[array]',
+  FILE: 'file',
   DATE: 'date',
   LONG: 'long',
-  NUMBER: 'number',
 }
 
 const DefaultFields = {
@@ -45,7 +52,7 @@ function mockCollectionByType({ type, children, name }, dict) {
   }
 
   switch (type) {
-    case FieldTypes.ARRAY: {
+    case FieldTypes.ARRAY_OBJECT: {
       const dataLen = Random.natural(1, 10)
       const finalData = []
       for (let i = 0; i < dataLen; i++) {

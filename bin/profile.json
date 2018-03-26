@@ -1,7 +1,7 @@
 {
-  "host": "http://xxx/",
-  "projectId": "xxx",
-  "token": "xxx",
+  "host": "http://api.jc/",
+  "projectId": "1xUQMl7KqR",
+  "token": "9d1e7bc482484b59aa8551b348421f04",
   "inject": {
     "xxx": {
       "code": 1,

@@ -4,18 +4,25 @@ const path = require('path')
 const logger = require('koa-logger')
 const cors = require('@koa/cors')
 const error = require('koa-error')
+const views = require('koa-views')
+const serve = require('koa-static')
 
-const { genRouter } = require('./service/router')
+const { genRouter } = require('./service/genRouter')
 
 async function initApp(port, profile) {
   const app = new Koa()
   const router = await genRouter(profile)
 
   app
+    .use(serve(path.join(__dirname) + '/public'))
     .use(logger())
     .use(cors())
+    .use(views(path.join(__dirname) + '/views', {
+      extension: 'pug'
+    }))
     .use(router.routes())
     .use(router.allowedMethods())
+
 
   // x-response-time
   app.use(async (ctx, next) => {
@@ -32,26 +39,26 @@ async function initApp(port, profile) {
   // })
 
   // 404 page
-  app.use(async ctx => {
-    // we need to explicitly set 404 here
-    // so that koa doesn't assign 200 on body=
-    ctx.status = 404
+  // app.use(async ctx => {
+  //   // we need to explicitly set 404 here
+  //   // so that koa doesn't assign 200 on body=
+  //   ctx.status = 404
 
-    switch (ctx.accepts('html', 'json')) {
-      case 'html':
-        ctx.type = 'html'
-        ctx.body = '<p>Page Not Found</p>'
-        break
-      case 'json':
-        ctx.body = {
-          message: 'Page Not Found'
-        }
-        break
-      default:
-        ctx.type = 'text'
-        ctx.body = 'Page Not Found'
-    }
-  })
+  //   switch (ctx.accepts('html', 'json')) {
+  //     case 'html':
+  //       ctx.type = 'html'
+  //       ctx.body = '<p>Page Not Found</p>'
+  //       break
+  //     case 'json':
+  //       ctx.body = {
+  //         message: 'Page Not Found'
+  //       }
+  //       break
+  //     default:
+  //       ctx.type = 'text'
+  //       ctx.body = 'Page Not Found'
+  //   }
+  // })
 
   app.use(error({
     engine: 'pug',
