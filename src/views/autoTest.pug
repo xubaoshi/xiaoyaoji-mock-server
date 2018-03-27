@@ -1,0 +1,16 @@
+extend layout.pug
+
+block content
+  h1 选择自动测试环境
+  form(action="/board/api/autoTest" method="post")
+    div
+      select(name="site")
+        each env in environments
+          - vars = env.vars
+          - value = vars.length === 0 ? '' : vars[0].value
+          option(value=`${value}`) #{env.name}
+    div
+      input(type="text"
+            name="ticket")
+    div
+      button(type="submit") 确认

@@ -6,6 +6,7 @@ const cors = require('@koa/cors')
 const error = require('koa-error')
 const views = require('koa-views')
 const serve = require('koa-static')
+const body = require('koa-body')
 
 const { genRouter } = require('./service/genRouter')
 
@@ -20,6 +21,7 @@ async function initApp(port, profile) {
     .use(views(path.join(__dirname) + '/views', {
       extension: 'pug'
     }))
+    .use(body())
     .use(router.routes())
     .use(router.allowedMethods())
 
