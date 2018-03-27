@@ -6,10 +6,11 @@ const { isEmpty } = require('../utils/lang')
 function testUrl(url, ticket) {
   return new Promise((resolve, reject) => {
     const options = {
+      method: 'POST',
       url,
       headers: {
         ticket,
-        'User-Agent': 'request',
+        // 'User-Agent': 'request',
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       }
@@ -47,4 +48,4 @@ async function autoTest(apiList, site, ticket) {
   console.log(results)
   return result
 }
-module.export = autoTest
+module.exports = autoTest
