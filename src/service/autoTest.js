@@ -4,15 +4,18 @@ const debug = require('debug')('auto test')
 const { isEmpty } = require('../utils/lang')
 
 const privateFn = {
-  mockRequestArgs(requestArgs) {
-    const result = {}
-    const args = JSON.parse(requestArgs)
-    if (!isEmpty(args)) {
-      args.forEach(arg => {
-        result[arg.name] = privateFn.mockDataByType(arg.type)
+  mockRequestArgs(original, requestArgs) {
+    if (!isEmpty(requestArgs)) {
+      requestArgs.forEach(arg => {
+        if (!isEmpty(arg.children)) {
+          original[arg.name] = {}
+          original[arg.name] = privateFn.mockRequestArgs(original[arg.name], arg.children)
+        } else {
+          original[arg.name] = privateFn.mockDataByType(arg.type)
+        }
       })
     }
-    return result
+    return original
   },
   mockDataByType() {
     return 'mock'
@@ -66,7 +69,7 @@ async function autoTest(apiList, site, ticket) {
           moduleIndex: i,
           folderIndex: j,
           childIndex: k,
-          requestArgs: privateFn.mockRequestArgs(child.requestArgs)
+          requestArgs: privateFn.mockRequestArgs({}, args)
         })
       })
     })
