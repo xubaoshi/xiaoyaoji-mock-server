@@ -1,49 +1,31 @@
 const request = require('request')
 const debug = require('debug')('auto test')
 
+const { mockRequest } = require('./mock.js')
 const { isEmpty } = require('../utils/lang')
 
-const privateFn = {
-  mockRequestArgs(original, requestArgs) {
-    if (!isEmpty(requestArgs)) {
-      requestArgs.forEach(arg => {
-        if (!isEmpty(arg.children)) {
-          original[arg.name] = {}
-          original[arg.name] = privateFn.mockRequestArgs(original[arg.name], arg.children)
-        } else {
-          original[arg.name] = privateFn.mockDataByType(arg.type)
-        }
-      })
-    }
-    return original
-  },
-  mockDataByType() {
-    return 'mock'
-  },
-  testUrl(url, ticket) {
-    return new Promise((resolve, reject) => {
-      const options = {
-        method: 'POST',
-        url,
-        headers: {
-          ticket,
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json',
-        }
-      }
-      request(options, (error, response, body) => {
-        // 后端内部统一 code为0时请求成功
-        if (!error && response.code === 0) {
-          debug(JSON.stringify(body))
-          resolve(true)
-        } else {
-          debug(JSON.stringify(error))
-          reject(false)
-        }
-      })
-    })
+const testUrl = (url, param, ticket) => new Promise((resolve, reject) => {
+  const options = {
+    method: 'POST',
+    url,
+    headers: {
+      ticket,
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(param)
   }
-}
+  request(options, (error, response, body) => {
+    // 后端内部统一 code为0时请求成功
+    if (!error && response.code === 0) {
+      debug(JSON.stringify(body))
+      resolve(true)
+    } else {
+      debug(JSON.stringify(error))
+      reject(false)
+    }
+  })
+})
 
 async function autoTest(apiList, site, ticket) {
   const result = []
@@ -57,25 +39,22 @@ async function autoTest(apiList, site, ticket) {
       folder.children.forEach((child, k) => {
         const url = site + child.url.replace('$prefix$', '')
         const args = JSON.parse(child.requestArgs)
-        // let requestArgs = {}
-        // if (!isEmpty(args)) {
-        //   args.forEach(arg => {
-        //     requestArgs[arg.name] = privateFn.mockDataByType(arg.type)
-
-        //   })
-        // }
         requestArr.push({
           url,
           moduleIndex: i,
           folderIndex: j,
           childIndex: k,
-          requestArgs: privateFn.mockRequestArgs({}, args)
+          params: mockRequest(args[0])
         })
       })
     })
   })
-  const promises = requestArr.map(data => privateFn.testUrl(data.url))
+  const promises = requestArr.map(data => {
+    debug('url:', data.url)
+    debug('params:', data.url)
+    return testUrl(data.url, data.params, ticket)
+  })
   const results = await Promise.all(promises)
-  return result
+  return results
 }
 module.exports = autoTest
