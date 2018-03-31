@@ -2,9 +2,9 @@
 const chalk = require('chalk')
 const detect = require('detect-port')
 const clearConsole = require('react-dev-utils/clearConsole')
-const openBrowser = require('react-dev-utils/openBrowser')
+// const openBrowser = require('react-dev-utils/openBrowser')
 const prompt = require('react-dev-utils/prompt')
-const debug = require('debug')('xiaoyaoji-mock-server:app')
+// const debug = require('debug')('xiaoyaoji-mock-server:app')
 
 const initApp = require('./index')
 
@@ -32,48 +32,48 @@ function normalizePort(val) {
  * Event listener for HTTP server "error" event.
  */
 
-function onError(error, port) {
-  if (error.syscall !== 'listen') {
-    throw error
-  }
+// function onError(error, port) {
+//   if (error.syscall !== 'listen') {
+//     throw error
+//   }
 
-  const bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port
+//   const bind = typeof port === 'string'
+//     ? 'Pipe ' + port
+//     : 'Port ' + port
 
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges')
-      process.exit(1)
-      break
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use')
-      process.exit(1)
-      break
-    default:
-      throw error
-  }
-}
+//   // handle specific listen errors with friendly messages
+//   switch (error.code) {
+//     case 'EACCES':
+//       console.error(bind + ' requires elevated privileges')
+//       process.exit(1)
+//       break
+//     case 'EADDRINUSE':
+//       console.error(bind + ' is already in use')
+//       process.exit(1)
+//       break
+//     default:
+//       throw error
+//   }
+// }
 
 /**
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening(server) {
-  const addr = server.address()
-  const bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port
-  debug('Listening on ' + bind)
+// function onListening(server) {
+//   const addr = server.address()
+//   const bind = typeof addr === 'string'
+//     ? 'pipe ' + addr
+//     : 'port ' + addr.port
+//   debug('Listening on ' + bind)
 
-  clearConsole()
-  console.log(chalk.cyan('Mock server is running on port [', addr.port, ']'))
-  console.log(chalk.cyan('For further info, please visite http://127.0.0.1:' + addr.port + '/'))
-  console.log()
+//   clearConsole()
+//   console.log(chalk.cyan('Mock server is running on port [', addr.port, ']'))
+//   console.log(chalk.cyan('For further info, please visite http://127.0.0.1:' + addr.port + '/'))
+//   console.log()
 
-  // openBrowser('http://127.0.0.1:' + addr.port + '/');
-}
+//   // openBrowser('http://127.0.0.1:' + addr.port + '/');
+// }
 
 function run(port, profile) {
   /**
