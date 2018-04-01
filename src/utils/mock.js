@@ -30,6 +30,9 @@ const mockDefaultField = fieldName => {
 
 // 根据类型模拟数据
 const mockCollectionByType = ({ type, children, name }, dict) => {
+  if (!name || !type) {
+    return []
+  }
   // 缺省字段的处理
   if (DefaultFields[name]) {
     return mockDefaultField(name)
@@ -76,10 +79,13 @@ const mockCollectionByType = ({ type, children, name }, dict) => {
       for (let i = 0; i < dataLen; i++) {
         finalData.push(
           children.reduce((a, c) => {
-            return {
-              ...a,
-              [c.name]: mockCollectionByType(c, dict)
+            if (c.name && c.type) {
+              return {
+                ...a,
+                [c.name]: mockCollectionByType(c, dict)
+              }
             }
+            return a
           }, {})
         )
       }
@@ -88,10 +94,13 @@ const mockCollectionByType = ({ type, children, name }, dict) => {
     }
     case FieldTypes.OBJECT: {
       const finalData = children.reduce((a, c) => {
-        return {
-          ...a,
-          [c.name]: mockCollectionByType(c, dict)
+        if (c.name && c.type) {
+          return {
+            ...a,
+            [c.name]: mockCollectionByType(c, dict)
+          }
         }
+        return a
       }, {})
 
       return finalData

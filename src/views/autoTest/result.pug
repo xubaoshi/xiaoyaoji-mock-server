@@ -1,0 +1,29 @@
+extends ../layout.pug
+
+block content
+  h1 自动化测试结果
+    each module in list
+      h2 #{module.name}
+      each folder in module.folders
+        h3 #{folder.name}
+        table
+          thead
+            tr
+              th 接口名称
+              th 接口地址
+              th 请求类型
+              th 请求结果
+              th 错误信息
+              th 创建时间
+              th 更新时间
+          tbody
+            each child in folder.children 
+              -let url = child.url.replace('$prefix$','')
+              tr
+                td #{child.name}
+                td #{url}
+                td #{child.requestMethod}
+                td #{child.testStatus}
+                //- td #{`${(child.testResult['errmsg'] && child.testResult['errmsg'] !== '') ? child.testResult['errmsg'] : '-'}`}
+                td #{child.createTime}
+                td #{child.lastUpdateTime}

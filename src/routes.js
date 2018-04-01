@@ -20,7 +20,7 @@ const generateBoardRoutes = (router, data) => {
   router.get(`${baseUrl}/autoTest`, async (ctx, next) => {
     let environments = JSON.parse(data.project.environments)
     environments = isEmpty(environments) ? [] : environments
-    await ctx.render('autoTest', {
+    await ctx.render('autoTest/index', {
       environments
     })
   })
@@ -28,9 +28,11 @@ const generateBoardRoutes = (router, data) => {
   // 执行自动测试并返回测试结果
   router.post(`${baseUrl}/autoTest`, async (ctx, next) => {
     const param = ctx.request.body
-    const list = data.modules.filter(module => module.folders.some(folder => !isEmpty(folder.children)))
-    const result = autoTest(list, param.site, param.ticket)
-    return result
+    const apiList = data.modules.filter(module => module.folders.some(folder => !isEmpty(folder.children)))
+    const list = await autoTest(apiList, param.site, param.ticket)
+    await ctx.render('autoTest/result', {
+      list
+    })
   })
 
   return router
