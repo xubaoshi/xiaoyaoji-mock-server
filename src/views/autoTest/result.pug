@@ -19,11 +19,13 @@ block content
           tbody
             each child in folder.children 
               -let url = child.url.replace('$prefix$','')
+              -let testResult = child.testResult
+              -let errmsg = testResult && testResult['errmsg'] ? testResult['errmsg'] : '-'
               tr
                 td #{child.name}
                 td #{url}
                 td #{child.requestMethod}
                 td #{child.testStatus}
-                //- td #{`${(child.testResult['errmsg'] && child.testResult['errmsg'] !== '') ? child.testResult['errmsg'] : '-'}`}
+                td #{errmsg}
                 td #{child.createTime}
                 td #{child.lastUpdateTime}

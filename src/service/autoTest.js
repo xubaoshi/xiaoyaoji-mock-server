@@ -43,6 +43,11 @@ async function autoTest(apiList, site, ticket) {
   if (isEmpty(apiList)) {
     return result
   }
+  // const newApiList = apiList.map(module => {
+  //   if (module.name.indexOf('B')) {
+      
+  //   }
+  // })
   apiList.forEach((module, i) => {
     module.folders.forEach((folder, j) => {
       folder.children.forEach((child, k) => {
@@ -85,4 +90,5 @@ async function autoTest(apiList, site, ticket) {
   })
   return apiList
 }
+
 module.exports = autoTest
