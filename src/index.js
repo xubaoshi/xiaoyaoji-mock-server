@@ -1,5 +1,6 @@
 const Koa = require('koa')
 const path = require('path')
+const chalk = require('chalk')
 
 const logger = require('koa-logger')
 const cors = require('@koa/cors')
@@ -10,9 +11,9 @@ const body = require('koa-body')
 
 const { genRouter } = require('./service/genRouter')
 
-async function initApp(port, profile) {
+async function initApp(port, profile, prefixs) {
   const app = new Koa()
-  const router = await genRouter(profile)
+  const router = await genRouter(profile, prefixs)
 
   app
     .use(serve(path.join(__dirname) + '/public'))
@@ -68,6 +69,11 @@ async function initApp(port, profile) {
   }))
 
   app.listen(port)
+
+  console.log()
+  console.log(chalk.blue('Mock server is running on port [', port, ']'))
+  console.log(chalk.blue('For further info, please visit http://127.0.0.1:' + port + '/'))
+  console.log()
 }
 
 module.exports = initApp

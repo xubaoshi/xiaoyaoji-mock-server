@@ -16,6 +16,7 @@ const generateBoardRoutes = (router, data) => {
       list
     })
   })
+  
   // 选择自动测试环境
   router.get(`${baseUrl}/autoTest`, async (ctx, next) => {
     let environments = JSON.parse(data.project.environments)

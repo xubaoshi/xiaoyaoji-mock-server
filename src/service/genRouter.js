@@ -1,7 +1,6 @@
 const fs = require('fs')
 const request = require('request')
 const Router = require('koa-router')
-const debug = require('debug')('xiaoyaoji-mock-server:router')
 const { mockResponse } = require('./mock')
 const generateBoardRoutes = require('../routes')
 
@@ -9,32 +8,37 @@ function getProjectData(url) {
   return new Promise((resolve, reject) => {
     request(url, (error, response, body) => {
       if (!error && response.statusCode === 200) {
-        // debug(JSON.stringify(body))
+        // console.log(JSON.stringify(body))
         resolve(body)
       } else {
-        debug(JSON.stringify(error))
+        console.log(JSON.stringify(error))
         reject(error)
       }
     })
   })
 }
 
-async function genRouter(profile) {
+async function genRouter(profile, prefixs) {
   const router = new Router()
 
-  // debug('profile: ' + profile)
+  console.log('profile: ' + profile)
   const profileData = JSON.parse(fs.readFileSync(profile))
   const apiUrl = `${profileData.host}api/project/${profileData.projectId}.json?token=${profileData.token}`
-  // debug('apiUrl: ' + apiUrl)
+  console.log('apiUrl: ' + apiUrl)
 
   const projectData = JSON.parse(await getProjectData(apiUrl))
-  debug('projectData: ' + projectData)
-  
+  // console.log('projectData: ' + projectData)
 
   projectData.data.modules.forEach(module => {
+    console.log('******      ' + module.name + '      ****** Start')
     module.folders.forEach(folder => {
+      console.log('   ###      ' + folder.name + '      ### Start')
       folder.children.forEach(child => {
-        const url = child.url.replace('$prefix$', '/api')
+        const url = prefixs
+          .reduce((a, c) => a.replace(c, '/api'), child.url)
+          .replace('/api/api', '/api')
+
+        console.log('      ' + child.name + ' ===> ' + url)
         router.all(url, async (ctx, next) => {
           // ctx.router available
           // await next()
@@ -45,7 +49,9 @@ async function genRouter(profile) {
           }
         })
       })
+      console.log('   ###      ' + folder.name + '      ### End')
     })
+    console.log('******      ' + module.name + '      ****** End')
   })
 
   return generateBoardRoutes(router, projectData.data)

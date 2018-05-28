@@ -1,0 +1,10 @@
+head
+  title 小幺鸡Mock Server
+  link(rel='stylesheet', href='https://cdn.bootcss.com/semantic-ui/2.3.1/semantic.min.css')
+
+
+
+div(class='ui secondary vertical pointing menu')
+  each menu in menus
+    - var itemClass = menu.key === currentMenu ? 'item active' : 'item'
+    a(class=`${itemClass}` href=`${menu.url}`) #{menu.name}
