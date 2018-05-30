@@ -1,25 +1,57 @@
 extends layout.pug
 
 block content
-  h1 小幺鸡接口api列表
-    each module in list
-      h2 #{module.name}
-      each folder in module.folders
-        h3 #{folder.name}
-        table(class='ui celled table')
-          thead
-            tr
-              th 接口名称
-              th 接口地址
-              th 请求类型
-              th 创建时间
-              th 更新时间
-          tbody
-            each child in folder.children 
-              -let url = child.url.replace('$prefix$','')
+    div(class='ui fixed inverted menu api-menu')
+      div(class='ui container')
+        a(class='header item' href='/mock/apiList') 小幺鸡接口api列表
+        each menu in menuList
+          a(class=`${menu.id === menuId ? "active item" : "item"}` href=`/mock/apiList?menuId=${menu.id}`) #{menu.name}
+    div(class='ui main container api-container')
+      div(class='ui five column grid') 
+        div(class='column')
+          div(class='ui secondary vertical pointing menu')
+            each subMenu in subMenuList
+              a(class=`${subMenu.id === subMenuId ? "active item" : "item"}` href=`/mock/apiList?menuId=${menuId}&subMenuId=${subMenu.id}`) #{subMenu.name}
+        div(class='content' id='root')
+          table(class='ui celled table js-api-table' )
+            thead
               tr
-                td #{child.name}
-                td #{url}
-                td #{child.requestMethod}
-                td #{child.createTime}
-                td #{child.lastUpdateTime}
+                th 接口名称
+                th 接口地址
+                th 请求类型
+                th 操作
+            tbody
+              each child in dataSource 
+                -let url = child.url.replace(/\$\S*\$/,'')
+                tr
+                  td #{child.name}
+                  td #{url}
+                  td #{child.requestMethod}
+                  td 
+                    a(class='js-api-detail' href='javascript:;' @click='handleClick'  data=`${JSON.stringify(child)}`) 接口详情
+          el-dialog(:title='modalTitle' :visible.sync='showModal' width='1000px' )
+            h4 全局请求头
+            el-table(:data='requestHeaders' size='small')
+              el-table-column(label='参数名称' property='name')
+              el-table-column(label='是否必须' property='require')
+              el-table-column(label='默认值' property='defaultValue')
+              el-table-column(label='描述' property='description' width='300px')
+            h4 请求参数
+            el-table(:data='requestArgs' size='small')
+              el-table-column(label='参数名称' property='name')
+              el-table-column(label='是否必须' property='require')
+              el-table-column(label='类型' property='defaultValue')
+              el-table-column(label='默认值' property='defaultValue')
+              el-table-column(label='描述' property='description' width='300px')
+            h4 响应数据
+            nested-table(:data='responseArgs')
+            div(slot='footer' class='dialog-footer')
+              el-button( @click="handleCancel") 取消
+        div(class='ui dimmer modals page transition js-modal-wrapper')
+          div(class='ui longer modal scrolling transition js-modal')
+block append content
+  script(src='https://unpkg.com/vue@2.5.6/dist/vue.js')
+  script(src='https://unpkg.com/element-ui@2.4.0/lib/index.js')
+  script(src='/js/apiList.js')
+  
+              

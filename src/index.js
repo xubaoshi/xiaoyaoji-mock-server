@@ -25,6 +25,7 @@ async function initApp(port, profile, prefixs) {
     .use(body())
     .use(router.routes())
     .use(router.allowedMethods())
+    .use(router.allowedMethods())
 
 
   // x-response-time
