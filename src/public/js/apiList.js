@@ -1,4 +1,5 @@
-/* eslint-disabled */
+/* eslint-disable no-undef */
+/* eslint-disable no-new */
 new Vue({
   el: '#root',
   data() {
